@@ -1,0 +1,94 @@
+from pathlib import Path
+import zipfile
+
+html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Local Service - Porumamilla</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4fff7;color:#173b2b}
+header{background:linear-gradient(135deg,#78d68f,#3b82c4);color:white;text-align:center;padding:28px 16px}
+header h1{margin:0;font-size:34px}
+header p{margin:8px 0 0;font-size:17px}
+.container{max-width:900px;margin:auto;padding:20px}
+.card{background:white;border-radius:16px;padding:20px;margin:15px 0;box-shadow:0 4px 14px #00000015}
+.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.service{padding:16px;text-align:center;border-radius:12px;background:#e9f8ee;font-weight:bold}
+.btn{display:block;text-align:center;text-decoration:none;color:white;padding:14px;border-radius:10px;margin-top:10px;font-weight:bold}
+.whatsapp{background:#25D366}.call{background:#1976d2}
+input,select,textarea{width:100%;padding:12px;margin:7px 0;border:1px solid #ccc;border-radius:8px;font-size:16px}
+button{width:100%;padding:14px;border:0;border-radius:10px;background:#3b82c4;color:white;font-size:17px;font-weight:bold}
+footer{text-align:center;padding:20px;color:#557}
+</style>
+</head>
+<body>
+<header>
+<h1>Local Service</h1>
+<p>All Services at One Place</p>
+<p>Porumamilla</p>
+</header>
+
+<div class="container">
+<div class="card">
+<h2>Our Services</h2>
+<div class="services">
+<div class="service">Plumber</div>
+<div class="service">Tank Cleaner</div>
+<div class="service">Civil Works</div>
+<div class="service">Electrician</div>
+<div class="service">Carpenter</div>
+<div class="service">Welding</div>
+<div class="service">POP</div>
+<div class="service">Tiles</div>
+</div>
+</div>
+
+<div class="card">
+<h2>Book a Service</h2>
+<form id="bookingForm">
+<input id="name" placeholder="Your Name" required>
+<input id="phone" placeholder="Your Phone Number" required>
+<select id="service" required>
+<option value="">Select Service</option>
+<option>Plumber</option><option>Tank Cleaner</option><option>Civil Works</option>
+<option>Electrician</option><option>Carpenter</option><option>Welding</option>
+<option>POP</option><option>Tiles</option>
+</select>
+<textarea id="details" rows="4" placeholder="Describe your work"></textarea>
+<button type="submit">Book on WhatsApp</button>
+</form>
+</div>
+
+<div class="card">
+<h2>Contact Us</h2>
+<a class="btn whatsapp" href="https://wa.me/918886355567" target="_blank">WhatsApp: 8886355567</a>
+<a class="btn call" href="tel:8886355567">Call: 8886355567</a>
+</div>
+</div>
+
+<footer>© 2026 Local Service - Porumamilla</footer>
+
+<script>
+document.getElementById('bookingForm').addEventListener('submit',function(e){
+e.preventDefault();
+const name=document.getElementById('name').value;
+const phone=document.getElementById('phone').value;
+const service=document.getElementById('service').value;
+const details=document.getElementById('details').value;
+const msg=Local Service Booking%0AName: ${name}%0APhone: ${phone}%0AService: ${service}%0ADetails: ${details};
+window.open('https://wa.me/918886355567?text='+msg,'_blank');
+});
+</script>
+</body>
+</html>"""
+
+base=Path("/mnt/data")
+html_path=base/"local_service_website.html"
+zip_path=base/"local_service_website.zip"
+html_path.write_text(html, encoding="utf-8")
+with zipfile.ZipFile(zip_path,"w",zipfile.ZIP_DEFLATED) as z:
+z.write(html_path, arcname="index.html")
+print(html_path, zip_path)
