@@ -33,14 +33,4 @@ function tab(x){['services','prices','photos','bookings'].forEach(id=>document.g
 function save(){localStorage.setItem('ls_services',JSON.stringify(s));render()}
 function render(){document.getElementById('list').innerHTML=s.map((x,i)=>'<div class="card row"><b>'+x[0]+'</b><input value="'+x[1]+'" onchange="s['+i+'][1]=this.value;save()"><button class="danger" onclick="s.splice('+i+',1);save()">Delete</button></div>').join('');document.getElementById('pricesList').innerHTML=s.map((x,i)=>'<div class="card row"><b>'+x[0]+'</b><input value="'+x[1]+'" onchange="s['+i+'][1]=this.value;save()"><button onclick="save()">Save</button></div>').join('')}
 function add(){let n=document.getElementById('new').value.trim(),p=document.getElementById('price').value.trim()||'Contact';if(n){s.push([n,p]);save();document.getElementById('new').value='';document.getElementById('price').value=''}}
-</script></body></html>"""
-
-folder = Path("/mnt/data/local_service_admin")
-folder.mkdir(parents=True, exist_ok=True)
-html_path = folder / "admin_panel.html"
-html_path.write_text(html, encoding="utf-8")
-zip_path = Path("/mnt/data/local_service_admin_panel.zip")
-with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-z.write(html_path, "admin_panel.html")
-print(html_path)
-print(zip_path)
+</script></body></html>
