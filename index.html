@@ -1,0 +1,49 @@
+from pathlib import Path
+import zipfile
+
+html = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Local Service Admin Panel</title>
+<style>
+{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f4f8f5;color:#173b2b}
+header{background:linear-gradient(135deg,#168a55,#1675a8);color:#fff;padding:18px}header h1{margin:0}
+main{max-width:1000px;margin:20px auto;padding:15px}.login,.card{background:#fff;padding:20px;border-radius:14px;box-shadow:0 3px 15px #0001;margin-bottom:15px}
+.login{max-width:420px;margin:50px auto}input,button{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #ccd8d1}
+button{background:#168a55;color:white;border:0;font-weight:bold}.danger{background:#c0392b}
+.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:15px}.nav button{background:white;color:#173b2b;border:1px solid #d8e5dd}
+.row{display:grid;grid-template-columns:1.2fr 1fr auto;gap:10px;align-items:center}.hidden{display:none}.small{font-size:13px;color:#60756a}
+@media(max-width:700px){.nav{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}}
+</style></head>
+<body>
+<header><h1>Local Service — Admin Panel</h1><div>Porumamilla</div></header>
+<div id="login" class="login"><h2>Admin Login</h2>
+<input id="u" value="admin" placeholder="Username"><input id="p" type="password" placeholder="Password">
+<button onclick="login()">Login</button><p id="msg" class="small">Demo: admin / 1234</p></div>
+<main id="app" class="hidden">
+<div class="nav"><button onclick="tab('services')">🛠 Services</button><button onclick="tab('prices')">💰 Prices</button><button onclick="tab('photos')">📷 Photos</button><button onclick="tab('bookings')">📋 Bookings</button></div>
+<section id="services" class="card"><h2>Services</h2><div id="list"></div>
+<h3>Add Service</h3><input id="new" placeholder="Service name"><input id="price" placeholder="Starting price"><button onclick="add()">Add Service</button></section>
+<section id="prices" class="card hidden"><h2>Prices</h2><div id="pricesList"></div></section>
+<section id="photos" class="card hidden"><h2>Service Photos</h2><p class="small">Photo upload section is ready; online storage will be connected in the next step.</p><input type="file" accept="image/" multiple></section>
+<section id="bookings" class="card hidden"><h2>Customer Bookings</h2><div class="card"><b>Demo booking</b><br>Customer: Sample Customer<br>Service: Plumber<br>Status: New</div><p class="small">Real bookings will appear after the online database connection.</p></section>
+<button class="danger" onclick="location.reload()">Logout</button>
+</main>
+<script>
+let s=JSON.parse(localStorage.getItem('ls_services')||'null')||[['Plumber','₹500'],['Tank Cleaner','₹1000'],['Civil Works','Contact'],['Electrician','₹300'],['Carpenter','₹500'],['Welding','₹500'],['POP','₹800'],['Tiles','₹500']];
+function login(){if(document.getElementById('u').value==='admin'&&document.getElementById('p').value==='1234'){loginEl().classList.add('hidden');document.getElementById('app').classList.remove('hidden');render()}else document.getElementById('msg').textContent='Use demo login: admin / 1234'}
+function loginEl(){return document.getElementById('login')}
+function tab(x){['services','prices','photos','bookings'].forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById(x).classList.remove('hidden')}
+function save(){localStorage.setItem('ls_services',JSON.stringify(s));render()}
+function render(){document.getElementById('list').innerHTML=s.map((x,i)=>'<div class="card row"><b>'+x[0]+'</b><input value="'+x[1]+'" onchange="s['+i+'][1]=this.value;save()"><button class="danger" onclick="s.splice('+i+',1);save()">Delete</button></div>').join('');document.getElementById('pricesList').innerHTML=s.map((x,i)=>'<div class="card row"><b>'+x[0]+'</b><input value="'+x[1]+'" onchange="s['+i+'][1]=this.value;save()"><button onclick="save()">Save</button></div>').join('')}
+function add(){let n=document.getElementById('new').value.trim(),p=document.getElementById('price').value.trim()||'Contact';if(n){s.push([n,p]);save();document.getElementById('new').value='';document.getElementById('price').value=''}}
+</script></body></html>"""
+
+folder = Path("/mnt/data/local_service_admin")
+folder.mkdir(parents=True, exist_ok=True)
+html_path = folder / "admin_panel.html"
+html_path.write_text(html, encoding="utf-8")
+zip_path = Path("/mnt/data/local_service_admin_panel.zip")
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+z.write(html_path, "admin_panel.html")
+print(html_path)
+print(zip_path)
